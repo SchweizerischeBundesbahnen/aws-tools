@@ -1,0 +1,16 @@
+# {{ host.name }}
+object Host "{{ host.id }}" {
+    import "generic-host"
+
+    address = "{{ host.local_ip }}"
+
+    {% if host.tags.HttpsCheck is defined %}
+    vars.http_vhosts["{{ host.tags.HttpsCheck }}"] = {
+      http_vhost = "{{ host.tags.HttpsCheck }}"
+      http_ssl = true
+      http_sni = true
+      http_uri = "/"
+    }
+    {% endif %}
+}
+{% endif %}
