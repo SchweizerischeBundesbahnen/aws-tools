@@ -2,27 +2,27 @@
 
 Some helpful scripts when interacting with the AWS cloud.
 
-## aws-inventory.py
+## aws-jinja2.py
 
-Generate config files from your AWS inventory with Jinja2 templates. 
+Generate config files from your AWS inventory with Jinja2 templates.
 There is an example template for creating an icinga2 hosts file provided. Take a look at `hosts.j2.dist`.
 
 ### Dependencies
 
 * Python 2.7
-* Boto 2
+* Boto > 2.43
 * Jinja 2
 
 ### Usage
 ```
-./aws-inventory.py --help
-usage: aws-inventory.py [-h] [--template TEMPLATE] [--aws-region AWS_REGION]
-                        OUTPUT_FILE
+$ ./aws-jinja2.py --help
+usage: aws-jinja2.py [-h] [--template TEMPLATE] [--aws-region AWS_REGION]
+                     OUTPUT_FILE
 
-Generate a hosts file from AWS.
+Generates a file with jinja2 from your AWS inventory.
 
 positional arguments:
-  OUTPUT_FILE           The path to the generated hosts file
+  OUTPUT_FILE           The path to the generated file
 
 optional arguments:
   -h, --help            show this help message and exit
