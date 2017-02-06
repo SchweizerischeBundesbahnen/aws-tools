@@ -13,6 +13,14 @@
         http_uri = "/"
       }
       {% endif %}
+
+      {% for metric in host.metrics %}
+        {% if metric.__str__() == "Metric:DiskSpaceUtilization" %}
+          vars.disks["{{ metric.dimensions['MountPath'][0] }}"] = "{{ metric.dimensions['Filesystem'][0] }}"
+        {% endif %}
+        {% if metric.__str__() == "Metric:LogicalVolumeSpaceUtilization" %}
+          vars.volumes["{{ metric.dimensions['MountPath'][0] }}"] = "{{ metric.dimensions['Filesystem'][0] }}"
+        {% endif %}
+      {% endfor %}
   }
-  {% endif %}
 {% endfor %}

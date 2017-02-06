@@ -6,6 +6,7 @@
 
 from __future__ import print_function
 import boto.ec2
+import boto.ec2.cloudwatch
 import jinja2
 import os
 import argparse
@@ -33,13 +34,18 @@ args = parser.parse_args()
 connEC2 = boto.ec2.connect_to_region(args.aws_region)
 instances = connEC2.get_all_instances()
 
+
+connCW = boto.ec2.cloudwatch.connect_to_region(args.aws_region)
+metrics = connCW.list_metrics()
+
 inventory = []
 for i in instances:
     instance = {
         'id': i.instances[0].id,
         'local_ip': i.instances[0].private_ip_address,
         'tags': i.instances[0].tags,
-        'state': i.instances[0].state
+        'state': i.instances[0].state,
+        'metrics': []
     }
 
     if 'Name' not in i.instances[0].tags:
@@ -48,6 +54,11 @@ for i in instances:
 
     instance['name'] = i.instances[0].tags['Name']
 
+    for metric in metrics:
+        if "InstanceId" in metric.dimensions.keys():
+            if metric.dimensions['InstanceId'][0] == instance['id']:
+                instance['metrics'].append(metric)
+                
     inventory.append(instance)
 
 f = open(args.OUTPUT_FILE, 'w')
