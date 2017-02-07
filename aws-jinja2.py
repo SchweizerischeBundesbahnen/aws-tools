@@ -36,7 +36,6 @@ instances = connEC2.get_all_instances()
 
 
 connCW = boto.ec2.cloudwatch.connect_to_region(args.aws_region)
-metrics = connCW.list_metrics()
 
 inventory = []
 for i in instances:
@@ -54,11 +53,13 @@ for i in instances:
 
     instance['name'] = i.instances[0].tags['Name']
 
+    metrics = connCW.list_metrics(dimensions={
+        "InstanceId": instance['id']
+    })
+
     for metric in metrics:
-        if "InstanceId" in metric.dimensions.keys():
-            if metric.dimensions['InstanceId'][0] == instance['id']:
-                instance['metrics'].append(metric)
-                
+        instance['metrics'].append(metric)
+
     inventory.append(instance)
 
 f = open(args.OUTPUT_FILE, 'w')
