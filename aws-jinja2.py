@@ -68,7 +68,7 @@ context = {
     "hosts": inventory
 }
 ret = render(args.template, context)
-ret = os.linesep.join([s for s in ret.splitlines() if s])
+ret = filter(lambda x: not re.match(r'^\s*$', x), ret)
 
 f.write(ret + "\n")
 f.close()
