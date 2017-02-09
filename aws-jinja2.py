@@ -73,7 +73,6 @@ result = ""
 for line in ret.splitlines():
     if re.search('\S', line):
         result += line + "\n"
-#ret = filter(lambda x: not re.match(r'^\s*$', x), ret)
 
 f.write(result + "\n")
 f.close()
