@@ -16,15 +16,29 @@
 
       {% for metric in host.metrics %}
         {% if metric.__str__() == "Metric:DiskSpaceUtilization" %}
-          vars.disks += {
-            mountPath = "{{ metric.dimensions['MountPath'][0] }}"
+          vars.disks["{{ metric.dimensions['MountPath'][0] }}"] = {
             filesystem = "{{ metric.dimensions['Filesystem'][0] }}"
+            {% for name, value in host.tags.iteritems() %}
+              {% set key = name.split(':') %}
+              {% if key[0] == "OverrideAlarm" and key[1] == metric.dimensions['MountPath'][0] %}
+                {% set alarms = value.split(':') %}
+            warning = 0:{{ alarms[0] }}
+            critical = 0:{{ alarms[1] }}
+              {% endif %}
+            {% endfor %}
           }
         {% endif %}
         {% if metric.__str__() == "Metric:LogicalVolumeSpaceUtilization" %}
-          vars.volumes += {
-            mountPath = "{{ metric.dimensions['MountPath'][0] }}"
+          vars.volumes["{{ metric.dimensions['MountPath'][0] }}"] = {
             filesystem = "{{ metric.dimensions['Filesystem'][0] }}"
+            {% for name, value in host.tags.iteritems() %}
+              {% set key = name.split(':') %}
+              {% if key[0] == "OverrideAlarm" and key[1] == metric.dimensions['MountPath'][0] %}
+                {% set alarms = value.split(':') %}
+            warning = 0:{{ alarms[0] }}
+            critical = 0:{{ alarms[1] }}
+              {% endif %}
+            {% endfor %}
           }
         {% endif %}
       {% endfor %}

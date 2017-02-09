@@ -10,7 +10,7 @@ import boto.ec2.cloudwatch
 import jinja2
 import os
 import argparse
-
+import re
 
 def render(tpl_path, context):
     path, filename = os.path.split(tpl_path)
@@ -68,9 +68,14 @@ context = {
     "hosts": inventory
 }
 ret = render(args.template, context)
-ret = filter(lambda x: not re.match(r'^\s*$', x), ret)
 
-f.write(ret + "\n")
+result = ""
+for line in ret.splitlines():
+    if re.search('\S', line):
+        result += line + "\n"
+#ret = filter(lambda x: not re.match(r'^\s*$', x), ret)
+
+f.write(result + "\n")
 f.close()
 
 exit(0)
