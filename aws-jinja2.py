@@ -11,12 +11,16 @@ import jinja2
 import os
 import argparse
 import re
+from urlparse import urlparse
 
 def render(tpl_path, context):
     path, filename = os.path.split(tpl_path)
-    return jinja2.Environment(
+
+    env = jinja2.Environment(
         loader=jinja2.FileSystemLoader(path or './')
-    ).get_template(filename).render(context)
+    )
+    env.filters['urlparse'] = urlparse
+    return env.get_template(filename).render(context)
 
 parser = argparse.ArgumentParser(description='Generates a file with jinja2 from your AWS inventory.')
 
